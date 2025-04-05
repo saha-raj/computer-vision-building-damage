@@ -69,7 +69,8 @@ function initDamageMap() {
     Promise.all([
         loadBuildingData('data/buildings_with_labels_stripped.geojson'),
         loadCraterData('data/all_craters.json'),
-        loadDatasetPerimeter('data/dataset_perimeter.geojson'),
+        // loadDatasetPerimeter('data/dataset_perimeter.geojson'),
+        loadDatasetPerimeter('data/tile_perimeter.geojson'),
         loadTileBoundsData('data/tile_bounds_coords_adj.csv')
     ])
     .then(([buildingData, craterData, perimeterData, tileData]) => {
@@ -446,8 +447,8 @@ function displayBuildingDamageData(map, data, layerGroup) {
         const marker = L.circleMarker([lat, lon], {
             radius: DEFAULT_RADIUS, // Start with default radius
             fillColor: '#d73027',
-            color: '#d73027',
-            weight: 1,
+            color: '#edf2f4',    // White edge color
+            weight: 2,         // Thicker edge line
             opacity: 1,
             fillOpacity: 0.8,
             pane: 'dataPane' // Use the custom data pane to stay on top
@@ -865,14 +866,26 @@ function initSatelliteImagery(map, tileBoundsData, satelliteLayer, zoomThreshold
         const bounds = map.getBounds();
         console.log("Current map bounds:", bounds.toBBoxString());
         
-        // Find tiles whose centers are within the current view
+        // Find tiles that have any corner within the current view
         const visibleTiles = tileBoundsData.filter(tile => {
-            // Check if the tile center is within the current view
-            const tileCenter = L.latLng(tile.lat_center, tile.lon_center);
-            const isVisible = bounds.contains(tileCenter);
+            // Create LatLng objects for all four corners of the tile
+            const corners = [
+                L.latLng(tile.lat_min, tile.lon_min), // Southwest
+                L.latLng(tile.lat_min, tile.lon_max), // Southeast
+                L.latLng(tile.lat_max, tile.lon_max), // Northeast
+                L.latLng(tile.lat_max, tile.lon_min)  // Northwest
+            ];
+            
+            // Check if any corner is within the current view
+            const isVisible = corners.some(corner => bounds.contains(corner)) || 
+                              // Also check if the tile completely contains the current view
+                              (tile.lat_min <= bounds.getSouth() && 
+                               tile.lat_max >= bounds.getNorth() && 
+                               tile.lon_min <= bounds.getWest() && 
+                               tile.lon_max >= bounds.getEast());
             
             if (isVisible) {
-                console.log(`Tile ${tile.row}_${tile.col} center (${tile.lat_center}, ${tile.lon_center}) is within current view`);
+                console.log(`Tile ${tile.row}_${tile.col} has at least one corner within view`);
             }
             
             return isVisible;
@@ -915,7 +928,7 @@ function initSatelliteImagery(map, tileBoundsData, satelliteLayer, zoomThreshold
                         
                         // Create image overlay in the satellite pane with 80% opacity
                         const imageOverlay = L.imageOverlay(imageUrl, imageBounds, {
-                            opacity: 0.8,  // Set to 80% opacity as requested
+                            opacity: 1.0,  // Set to 80% opacity as requested
                             interactive: false,
                             pane: 'satellitePane',
                             className: 'satellite-tile',
