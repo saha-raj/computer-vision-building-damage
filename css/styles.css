@@ -1616,7 +1616,7 @@ video {
     transform: translateX(-50%); /* Part of centering trick */
 
     /* Define a height for the container - THIS IS REQUIRED */
-    height: 50vh; /* Example: 70% viewport height - ADJUST AS NEEDED */
+    height: 35vh; /* Example: 70% viewport height - ADJUST AS NEEDED */
     /* No overflow here, let the inner container handle clipping if needed */
     /* overflow: hidden; */ /* REMOVED */
 }

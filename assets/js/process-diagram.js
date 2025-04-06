@@ -832,7 +832,7 @@ function calculateNodeLayout(nodes, stageId, nodeWidth, nodeHeight, nodePadding,
 function initProcessDiagramSVG() {
     // Define the container ID and the path to the detailed SVG
     const detailContainerId = 'process-detail-svg-container';
-    const detailedSvgPath = 'flowcharts/detailed-01.svg'; // Make sure this path is correct
+    const detailedSvgPath = 'flowcharts/detailed-01-01.svg';
 
     // Select the container element using D3
     const detailContainer = d3.select(`#${detailContainerId}`);
@@ -840,61 +840,85 @@ function initProcessDiagramSVG() {
     // Check if the container element exists in the HTML
     if (detailContainer.empty()) {
         console.error(`Process diagram container #${detailContainerId} not found.`);
-        return; // Stop execution if the container is missing
+        return;
     }
 
     // Load the detailed SVG file using D3's XML loader
     d3.xml(detailedSvgPath)
         .then(detailXml => {
-            // This code runs if the SVG file is loaded successfully
             console.log('Detailed SVG loaded successfully.');
 
             // Get the root <svg> element from the loaded XML
             const detailSvgNode = detailXml.documentElement;
-
-            // Clear the container first (optional, prevents duplicates on re-runs)
             detailContainer.html('');
-
-            // Append the loaded SVG node to the container in the HTML
             detailContainer.node().appendChild(detailSvgNode);
 
             // Select the newly added SVG element using D3
             const detailSelection = d3.select(detailSvgNode);
 
-            // --- Style the SVG for Full Height ---
-            // Set width to 100% to allow it to scale horizontally based on height
-            detailSelection.attr('width', '100%');
-            // Set height to 100% to make the SVG fill the container's vertical space
-            detailSelection.attr('height', '100%');
-            // Control how the SVG scales. 'xMidYMid slice' ensures:
-            // - Aspect ratio is maintained.
-            // - The SVG is scaled up/down to COVER the container ('slice').
-            // - The SVG is centered horizontally ('xMid') and vertically ('yMid').
-            //   This means the left/right edges might be cut off if the SVG is wider than the container.
-            detailSelection.attr('preserveAspectRatio', 'xMidYMid slice');
-            // --- End Styling ---
+            // Style the SVG
+            detailSelection
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .attr('preserveAspectRatio', 'xMinYMid slice'); // Changed to xMin to align left
 
-            // Ensure the container itself is visible (remove 'hidden' class if it exists)
+            // Update the style element in the SVG to include our font definitions
+            let styleElement = detailSelection.select('style');
+            const currentStyle = styleElement.text();
+            styleElement.text(currentStyle + `
+                .st2 { font-family: 'Lato', sans-serif !important; }
+                .st1 { fill: #495057 !important; }
+            `);
+
+            // Create wrapper for content
+            const existingContent = detailSelection.node().innerHTML;
+            detailSelection.node().innerHTML = '';
+            
+            const contentWrapper = detailSelection
+                .append('g')
+                .attr('class', 'drag-wrapper')
+                .html(existingContent);
+
+            // Position at left edge
+            const initialX = 0;
+            contentWrapper.attr('transform', `translate(${initialX},0)`);
+            
+            // Track the current position
+            let currentX = initialX;
+
+            // Create drag behavior with a very simple implementation
+            const drag = d3.drag()
+                .on('start', function(event) {
+                    // Store starting position
+                    d3.select(this).attr('cursor', 'grabbing');
+                })
+                .on('drag', function(event) {
+                    // Simple drag that just adds the delta X
+                    currentX += event.dx;
+                    
+                    // Allow movement right but not left of initial position
+                    currentX = Math.min(currentX, 0);
+                    
+                    d3.select(this).attr('transform', `translate(${currentX},0)`);
+                })
+                .on('end', function(event) {
+                    // Reset cursor
+                    d3.select(this).attr('cursor', 'grab');
+                });
+
+            // Apply drag behavior
+            contentWrapper
+                .style('cursor', 'grab')
+                .call(drag);
+
+            // Ensure container is visible
             detailContainer.classed('hidden', false);
-            // Ensure the container doesn't have an inline style hiding it
-            detailContainer.style('display', null); // Use null to remove the style
-
-            console.log('Detailed SVG injected and styled to fit container height.');
-
+            detailContainer.style('display', null);
         })
         .catch(error => {
-            // This code runs if there's an error loading the SVG file
             console.error('Error loading detailed SVG file:', error);
-            // Display an error message inside the container
             detailContainer.html('<p>Error loading detail diagram. Please check the file path and network connection.</p>');
         });
-
-    // --- Removed ---
-    // No overview SVG loading
-    // No click handlers needed
-    // No back button needed
-    // No focusOnDetailElement function needed
-    // --- End Removed ---
 }
 
 // Make sure this function is called when the page loads, e.g.:
