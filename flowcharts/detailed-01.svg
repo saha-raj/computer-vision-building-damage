@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 28.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="-4066 0 10313.26 1181.93" style="enable-background:new -4066 0 10313.26 1181.93;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#E2E0E0;}
+	.st1{fill:#4C4C4C;}
+	.st2{font-family:'Open Sans', sans-serif;}
+	.st3{font-size:42px;}
+	.st4{fill:#999999;}
+	.st5{fill:#EFEFEF;}
+	.st6{font-family:'Open Sans', sans-serif;}
+	.st7{font-size:28px;}
+	.st8{fill:none;stroke:#999999;stroke-width:2;stroke-miterlimit:10;}
+</style>
+<path id="detail-DC" class="st0" d="M3429.41,1036.81H1990.58c-6.6,0-12-5.4-12-12V185.92c0-6.6,5.4-12,12-12h1438.83c6.6,0,12,5.4,12,12v838.89
+	C3441.41,1031.41,3436.01,1036.81,3429.41,1036.81z"/>
+<path id="detail-DP" class="st0" d="M1810.21,1036.81H371.37c-6.6,0-12-5.4-12-12V185.92c0-6.6,5.4-12,12-12h1438.83c6.6,0,12,5.4,12,12v838.89
+	C1822.21,1031.41,1816.81,1036.81,1810.21,1036.81z"/>
+<text transform="matrix(1 0 0 1 893.0116 233.2727)" class="st1 st2 st3">Data Collection</text>
+<path class="st4" d="M777.56,551.17H457.67c-6.6,0-12-5.4-12-12v-95.9c0-6.6,5.4-12,12-12h319.89c6.6,0,12,5.4,12,12v95.9
+	C789.56,545.77,784.16,551.17,777.56,551.17z"/>
+<text transform="matrix(1 0 0 1 504.9882 500.6702)" class="st5 st6 st7">Google Earth Web</text>
+<g>
+	<path class="st4" d="M777.56,868.03H457.67c-6.6,0-12-5.4-12-12v-95.9c0-6.6,5.4-12,12-12h319.89c6.6,0,12,5.4,12,12v95.9
+		C789.56,862.63,784.16,868.03,777.56,868.03z"/>
+	<text transform="matrix(1 0 0 1 475.939 801.3385)"><tspan x="0" y="0" class="st5 st6 st7">Building Footprint data </tspan><tspan x="-2.04" y="33.6" class="st5 st6 st7">from Open Street Maps</tspan></text>
+</g>
+<g>
+	<path class="st4" d="M1223.56,551.17H903.67c-6.6,0-12-5.4-12-12v-95.9c0-6.6,5.4-12,12-12h319.89c6.6,0,12,5.4,12,12v95.9
+		C1235.56,545.77,1230.16,551.17,1223.56,551.17z"/>
+	<text transform="matrix(1 0 0 1 916.6323 500.6702)" class="st5 st6 st7">Automated Screenshots</text>
+</g>
+<g>
+	<path class="st4" d="M1701.84,443.49h-319.89c-6.6,0-12-5.4-12-12v-95.9c0-6.6,5.4-12,12-12h319.89c6.6,0,12,5.4,12,12v95.9
+		C1713.84,438.09,1708.44,443.49,1701.84,443.49z"/>
+	<text transform="matrix(1 0 0 1 1402.0804 379.1561)"><tspan x="0" y="0" class="st5 st6 st7">Capture latest imagery </tspan><tspan x="98.94" y="33.6" class="st5 st6 st7">(2023)</tspan></text>
+</g>
+<g>
+	<path class="st4" d="M1701.84,645.36h-319.89c-6.6,0-12-5.4-12-12v-95.9c0-6.6,5.4-12,12-12h319.89c6.6,0,12,5.4,12,12v95.9
+		C1713.84,639.96,1708.44,645.36,1701.84,645.36z"/>
+	<text transform="matrix(1 0 0 1 1396.3949 581.0275)"><tspan x="0" y="0" class="st5 st6 st7">Capture earlier imagery </tspan><tspan x="104.62" y="33.6" class="st5 st6 st7">(2022)</tspan></text>
+</g>
+<g>
+	<g>
+		<line class="st8" x1="789.56" y1="491.22" x2="889.5" y2="491.22"/>
+		<g>
+			<polygon class="st4" points="882.88,499.4 881.51,497.93 888.74,491.22 881.51,484.5 882.88,483.04 891.67,491.22 			"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<polyline class="st8" points="1234.01,492.21 1295.84,492.21 1295.84,383.54 1366.23,383.54 		"/>
+		<g>
+			<polygon class="st4" points="1359.6,391.72 1358.24,390.26 1365.46,383.55 1358.24,376.83 1359.6,375.37 1368.4,383.55 			"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<polyline class="st8" points="1234.01,492.21 1295.84,492.21 1295.84,585.41 1366.23,585.41 		"/>
+		<g>
+			<polygon class="st4" points="1359.6,593.59 1358.24,592.13 1365.46,585.42 1358.24,578.7 1359.6,577.24 1368.4,585.42 			"/>
+		</g>
+	</g>
+</g>
+<text transform="matrix(1 0 0 1 2536.6345 246.4492)" class="st1 st2 st3">Data Processing</text>
+<path class="st4" d="M2442.32,443.49h-319.89c-6.6,0-12-5.4-12-12v-95.9c0-6.6,5.4-12,12-12h319.89c6.6,0,12,5.4,12,12v95.9
+	C2454.32,438.09,2448.92,443.49,2442.32,443.49z"/>
+<text transform="matrix(1 0 0 1 2169.7458 392.9968)" class="st5 st6 st7">Google Earth Web</text>
+<path class="st4" d="M2927.76,443.49h-319.89c-6.6,0-12-5.4-12-12v-95.9c0-6.6,5.4-12,12-12h319.89c6.6,0,12,5.4,12,12v95.9
+	C2939.76,438.09,2934.36,443.49,2927.76,443.49z"/>
+<text transform="matrix(1 0 0 1 2655.1897 392.9968)" class="st5 st6 st7">Google Earth Web</text>
+<path class="st4" d="M3240.9,868.03h-319.89c-6.6,0-12-5.4-12-12v-95.9c0-6.6,5.4-12,12-12h319.89c6.6,0,12,5.4,12,12v95.9
+	C3252.9,862.63,3247.5,868.03,3240.9,868.03z"/>
+<text transform="matrix(1 0 0 1 2968.325 817.537)" class="st5 st6 st7">Google Earth Web</text>
+<g>
+	<g>
+		<line class="st8" x1="1708.24" y1="379.16" x2="2108.26" y2="379.16"/>
+		<g>
+			<polygon class="st4" points="2101.63,387.34 2100.27,385.87 2107.49,379.16 2100.27,372.44 2101.63,370.98 2110.43,379.16 			"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<polyline class="st8" points="1713.84,585.41 1892.37,585.41 1893.68,379.16 2108.26,379.16 		"/>
+		<g>
+			<polygon class="st4" points="2101.63,387.34 2100.27,385.87 2107.49,379.16 2100.27,372.44 2101.63,370.98 2110.43,379.16 			"/>
+		</g>
+	</g>
+</g>
+<path id="detail-ML" class="st0" d="M5048.62,1036.81H3609.78c-6.6,0-12-5.4-12-12V185.92c0-6.6,5.4-12,12-12h1438.83c6.6,0,12,5.4,12,12v838.89
+	C5060.62,1031.41,5055.22,1036.81,5048.62,1036.81z"/>
+<text transform="matrix(1 0 0 1 4163.8413 246.4492)" class="st1 st2 st3">Data Processing</text>
+<path id="detail-PR" class="st0" d="M8287.03,1036.81H6848.19c-6.6,0-12-5.4-12-12V185.92c0-6.6,5.4-12,12-12h1438.83c6.6,0,12,5.4,12,12v838.89
+	C8299.03,1031.41,8293.63,1036.81,8287.03,1036.81z"/>
+<path id="detail-MT" class="st0" d="M6667.82,1036.81H5228.99c-6.6,0-12-5.4-12-12V185.92c0-6.6,5.4-12,12-12h1438.83c6.6,0,12,5.4,12,12v838.89
+	C6679.82,1031.41,6674.42,1036.81,6667.82,1036.81z"/>
+<path id="detail-OV" class="st0" d="M9906.23,1036.81H8467.4c-6.6,0-12-5.4-12-12V185.92c0-6.6,5.4-12,12-12h1438.83c6.6,0,12,5.4,12,12v838.89
+	C9918.23,1031.41,9912.83,1036.81,9906.23,1036.81z"/>
+</svg>

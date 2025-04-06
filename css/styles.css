@@ -1019,6 +1019,84 @@ button:disabled {
     font-weight: 600;
 }
 
+/* Process Diagram Styling */
+/* #process-diagram {
+    background: linear-gradient(to bottom right, rgba(255,255,255,0.8), rgba(248,249,250,0.8));
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+#process-diagram svg {
+    display: block;
+    font-family: var(--ui-font);
+} */
+
+#process-diagram {
+  /* Ensure the container behaves like a block */
+  display: block;
+  /* width: 80%; */
+  /* Or your desired width */
+  /* max-width: 800px; */
+  /* Or your desired max width */
+  margin-left: auto;
+  /* Center the block horizontally */
+  margin-right: auto;
+  /* Center the block horizontally */
+
+  padding-left: 0;
+  padding-right: 0;
+
+  /* --- Add these lines to center the SVG inside this div --- */
+  display: flex;
+  /* Use flexbox for the container */
+  justify-content: center;
+  /* Center SVG horizontally within the div */
+  align-items: center;
+  /* Center SVG vertically within the div */
+  /* --- End of added lines --- */
+
+  /* Optional: Add a border to see the div's boundaries */
+  border: 1px solid red;
+  /* TEMPORARY: Helps visualize the container */
+
+  /* Optional: Give the container a minimum height if needed */
+  /* min-height: 350px; */
+  /* Example: Ensure div is tall enough */
+}
+
+#process-diagram svg {
+  /* The SVG should take the height set in JS (300px) */
+  /* display: block; is usually good practice */
+  display: block;
+  /* Optional: Add border to see SVG boundaries */
+  /* border: 1px solid blue; */
+  /* TEMPORARY */
+  width: 90%
+}
+
+.node {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.node:hover {
+    transform: scale(1.05);
+}
+
+.node rect {
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+}
+
+.link {
+    transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.subgraph-label {
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+    letter-spacing: 0.5px;
+}
+
 /* More Stories Section */
 .more-stories {
   background: var(--background-color);
@@ -1526,4 +1604,45 @@ video {
 
 #clear-selections-btn {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');
+}
+
+/* Add these styles to your existing CSS file */
+
+.process-flow-container {
+    margin: 3rem 0;      /* Vertical margins */
+    width: 100vw;        /* Full viewport width */
+    position: relative;  /* Needed for centering trick */
+    left: 50%;           /* Part of centering trick */
+    transform: translateX(-50%); /* Part of centering trick */
+
+    /* Define a height for the container - THIS IS REQUIRED */
+    height: 50vh; /* Example: 70% viewport height - ADJUST AS NEEDED */
+    /* No overflow here, let the inner container handle clipping if needed */
+    /* overflow: hidden; */ /* REMOVED */
+}
+
+/* Inner container - Holds the SVG, applies max-width and centers */
+#process-detail-svg-container {
+    width: 100%;         /* Take full width of parent initially */
+    max-width: 1200px;   /* Apply the maximum width constraint */
+    height: 100%;        /* Fill the height of the parent */
+    margin: 0 auto;      /* Center this container horizontally */
+    overflow: hidden;    /* Clip the SVG if it overflows this container */
+    position: relative;  /* Optional: Good practice for positioning context */
+}
+
+
+#process-overview-svg-container svg, /* Keep style for overview if re-enabled later */
+#process-detail-svg-container svg {
+    display: block; /* Remove extra space below SVG */
+    /* Width, Height, and preserveAspectRatio are set by JS */
+    /* The SVG will now fill the height of #process-detail-svg-container */
+    /* and potentially overflow horizontally, getting clipped by it. */
+    /* Because #process-detail-svg-container has max-width, the SVG */
+    /* effectively has that max-width too. */
+}
+
+/* Add a class to hide elements */
+.hidden {
+    display: none !important;
 }

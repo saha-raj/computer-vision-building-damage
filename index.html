@@ -69,6 +69,26 @@
             <p class="caption">Building selection tool demo (focused on tile row 9, col 6)</p>
         </div>
 
+        <div class="text-block">
+            <h2>Process Overview</h2>
+            
+            <p>An overview of our methodology for building damage assessment using satellite imagery and machine learning.</p>
+        </div>
+
+        <!-- NEW SVG Containers -->
+        <div class="process-flow-container">
+            <!-- Container for the overview SVG -->
+            <div id="process-overview-svg-container">
+                <!-- overview SVG will be loaded here -->
+            </div>
+            <!-- Container for the detailed SVG (initially hidden) -->
+            <div id="process-detail-svg-container" style="display: none;">
+                 <!-- detailed SVG will be loaded here -->
+                 <button id="process-back-button" class="control-btn" title="Back to Overview">← Back</button>
+            </div>
+             <p class="caption">End-to-end process flow. Click a stage for details.</p>
+        </div>
+
         <div class="media-container">
             <img src="images/combo_0131.png" alt="Fireflies synchronizing their flashes" class="full-width-image">
             <p class="caption">Fireflies synchronizing their flashes in a forest. The patterns emerge from simple individual
@@ -122,6 +142,9 @@
     <!-- Load D3.js -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     
+    <!-- d3-dag Library -->
+    <script src="https://unpkg.com/d3-dag@latest/dist/d3-dag.umd.min.js"></script>
+
     <!-- Leaflet JavaScript -->
     <script src="assets/js/lib/leaflet.js"></script>
      
@@ -131,6 +154,8 @@
     <!-- Custom map scripts -->
     <script src="assets/js/maps/damage-map.js"></script>
     <script src="assets/js/maps/building-selector-map.js"></script>
+    <!-- Process diagram script -->
+    <script src="assets/js/process-diagram.js"></script>
     
 </body>
 </html> 

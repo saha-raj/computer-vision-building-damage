@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 28.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 2561.04 1181.93" style="enable-background:new 0 0 2561.04 1181.93;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#E2E0E0;}
+	.st1{fill:#4C4C4C;}
+	.st2{font-family:'Open Sans', sans-serif;}
+	.st3{font-size:31px;}
+	.st4{fill:none;stroke:#666666;stroke-width:3;stroke-miterlimit:10;}
+	.st5{fill:#666666;}
+	.st6{font-size:42px; font-family:'Open Sans', sans-serif;}
+</style>
+<rect id="overview-DC" x="123.97" y="442.71" class="st0" width="296.52" height="296.52"/>
+<rect id="overview-DP" x="527.14" y="442.71" class="st0" width="296.52" height="296.52"/>
+<rect id="overview-ML" x="930.31" y="442.71" class="st0" width="296.52" height="296.52"/>
+<rect id="overview-MT" x="1333.48" y="442.71" class="st0" width="296.52" height="296.52"/>
+<rect id="overview-PR" x="1736.65" y="442.21" class="st0" width="296.52" height="296.52"/>
+<rect id="overview-OV" x="2139.81" y="442.21" class="st0" width="296.52" height="296.52"/>
+<text transform="matrix(1 0 0 1 235.3069 584.447)"><tspan x="0" y="0" class="st1 st2 st3">Data</tspan><tspan x="-40.38" y="37.2" class="st1 st2 st3">Collection</tspan></text>
+<text transform="matrix(1 0 0 1 638.4753 584.4468)"><tspan x="0" y="0" class="st1 st2 st3">Data</tspan><tspan x="-45.65" y="37.2" class="st1 st2 st3">Processing</tspan></text>
+<text transform="matrix(1 0 0 1 982.8655 603.0481)" class="st1 st2 st3">Annotations</text>
+<text transform="matrix(1 0 0 1 1433.8298 584.4466)"><tspan x="0" y="0" class="st1 st2 st3">Model </tspan><tspan x="-16.06" y="37.2" class="st1 st2 st3">Training</tspan></text>
+<text transform="matrix(1 0 0 1 1789.5747 584.4464)"><tspan x="0" y="0" class="st1 st2 st3">Prediction &amp; </tspan><tspan x="4.58" y="37.2" class="st1 st2 st3">Refinement</tspan></text>
+<text transform="matrix(1 0 0 1 2216.4463 584.4462)"><tspan x="0" y="0" class="st1 st2 st3">Output &amp; </tspan><tspan x="-28.06" y="37.2" class="st1 st2 st3">Visualization</tspan></text>
+<g>
+	<g>
+		<line class="st4" x1="420.49" y1="603.05" x2="523.89" y2="603.05"/>
+		<g>
+			<polygon class="st5" points="511.95,617.32 509.9,615.12 524.74,603.05 509.9,590.98 511.95,588.78 529.14,603.05"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line class="st4" x1="823.66" y1="603.05" x2="927.06" y2="603.05"/>
+		<g>
+			<polygon class="st5" points="915.12,617.32 913.07,615.12 927.91,603.05 913.07,590.98 915.12,588.78 932.31,603.05"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line class="st4" x1="1227.19" y1="603.05" x2="1330.59" y2="603.05"/>
+		<g>
+			<polygon class="st5" points="1318.65,617.32 1316.6,615.12 1331.44,603.05 1316.6,590.98 1318.65,588.78 1335.84,603.05"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line class="st4" x1="1630" y1="603.05" x2="1733.39" y2="603.05"/>
+		<g>
+			<polygon class="st5" points="1721.45,617.32 1719.41,615.12 1734.24,603.05 1719.41,590.98 1721.45,588.78 1738.65,603.05"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line class="st4" x1="2033.16" y1="603.05" x2="2136.56" y2="603.05"/>
+		<g>
+			<polygon class="st5" points="2124.62,617.32 2122.58,615.12 2137.41,603.05 2122.58,590.98 2124.62,588.78 2141.82,603.05"/>
+		</g>
+	</g>
+</g>
+<text transform="matrix(1 0 0 1 1095.9174 173.1935)" class="st2 st6">Process Overview</text>
+</svg>
