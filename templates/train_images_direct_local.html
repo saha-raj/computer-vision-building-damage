@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Building Damage Assessment Training Tool</title>
+    <link rel="stylesheet" href="/static/css/leaflet.css" />
+    <link rel="stylesheet" href="/static/css/leaflet.draw.css" />
+    <script src="/static/js/leaflet.js"></script>
+    <script src="/static/js/leaflet.draw.js"></script>
+    <script src="/static/js/turf.min.js"></script>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    
+    <!-- Leaflet.Draw CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    
+    <!-- Add this in the head section -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏢</text></svg>">
+    
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            height: 100%;
+        }
+        .sidebar {
+            width: 15%;
+            background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .map-container {
+            width: 85%;
+            height: 100%;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        button {
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .load-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7e7e7;
+            border-radius: 4px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .stats {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .building-tooltip {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1000;  /* Ensure it's above other elements */
+        }
+        .map-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+            padding: 5px;
+        }
+        
+        .control-btn {
+            width: 30px;
+            height: 30px;
+            background-size: 20px 20px;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 0 2px;
+            cursor: pointer;
+        }
+        
+        .draw-btn {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>');
+        }
+        
+        .move-btn {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74"/><path d="M14 10.5a2.5 2.5 0 0 1 5 0v3.75"/><path d="M9 12.5a2.5 2.5 0 0 0-5 0v3.75"/><path d="M12 14.5h-1.38"/><path d="M16 14.5h-1.38"/><path d="M7 14.5H5.62"/><path d="M18 14.5h-1.38"/><path d="M9 11.246c0 1.384 0 4.004 0 4.004"/><path d="M16 11.246c0 1.384 0 4.004 0 4.004"/><path d="M7 12.5v4"/><path d="M18 12.5v4"/></svg>');
+        }
+        
+        .active {
+            background-color: #e3f2fd;
+            border-color: #2196F3;
+        }
+        
+        .crater-btn {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>');
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h3>Training Tool</h3>
+            <p>Click on buildings to toggle between intact (green) and damaged (red)</p>
+            
+            <button id="saveBtn" class="save-btn">Save</button>
+            <button id="loadBtn" class="load-btn">Load New Tile</button>
+            <button id="drawBtn" style="background-color: #FF9800; color: white;">Draw Selection</button>
+            
+            <div id="status" class="status">
+                Ready to start. Click "Load New Tile" to begin.
+            </div>
+            
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+            
+            <div class="stats">
+                <p>Current tile: <span id="tileInfo">None</span></p>
+                <p>Buildings: <span id="buildingCount">0</span></p>
+                <p>Damaged: <span id="damagedCount">0</span></p>
+                <p>Craters: <span id="craterCount">0</span></p>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div class="map-controls">
+                <button id="drawControlBtn" class="control-btn draw-btn" title="Draw Mode"></button>
+                <button id="moveControlBtn" class="control-btn move-btn active" title="Move Mode"></button>
+                <button id="craterControlBtn" class="control-btn crater-btn" title="Mark Craters"></button>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
+    <!-- Leaflet.Draw JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    
+    <!-- Add this before the main script, after Leaflet.Draw -->
+    <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+    
+    <script>
+        // Global variables
+        let currentRow = null;
+        let currentCol = null;
+        let buildingStates = {};
+        let map = null;
+        let imageOverlay = null;
+        let buildingsLayer = null;
+        let craters = [];
+        let isCreatingCrater = false;
+        let currentCrater = null;
+        let craterLayer = null;
+        
+        // DOM elements
+        const saveBtn = document.getElementById('saveBtn');
+        const loadBtn = document.getElementById('loadBtn');
+        const statusDiv = document.getElementById('status');
+        const loadingDiv = document.getElementById('loading');
+        const tileInfoSpan = document.getElementById('tileInfo');
+        const buildingCountSpan = document.getElementById('buildingCount');
+        const damagedCountSpan = document.getElementById('damagedCount');
+        
+        // Initialize the map
+        function initMap() {
+            if (map) {
+                map.remove();
+            }
+            
+            map = L.map('map', {
+                zoomControl: true,  // Keep the default zoom control (top left)
+                zoomSnap: 0.05,      // Allow finer zoom levels
+                wheelPxPerZoomLevel: 100  // Make mouse wheel zooming more sensitive
+            }).setView([0, 0], 2);
+            
+            // Add a base map layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+        }
+        
+        // Event listeners
+        saveBtn.addEventListener('click', saveTrainingData);
+        loadBtn.addEventListener('click', loadRandomTile);
+        document.getElementById('drawBtn').addEventListener('click', function() {
+            // Initialize the map for freehand drawing
+            initFreehandDrawing();
+            
+            updateStatus('Draw by holding the mouse button and moving to trace an area. Release to finish.');
+        });
+        
+        // Add these event listeners after the existing ones
+        document.getElementById('drawControlBtn').addEventListener('click', function() {
+            initFreehandDrawing();
+        });
+
+        document.getElementById('moveControlBtn').addEventListener('click', function() {
+            // Exit all other modes
+            exitDrawingMode();
+            exitCraterMarking();
+            
+            // Ensure only move button is active
+            document.getElementById('moveControlBtn').classList.add('active');
+            document.getElementById('drawControlBtn').classList.remove('active');
+            document.getElementById('craterControlBtn').classList.remove('active');
+        });
+
+        document.getElementById('craterControlBtn').addEventListener('click', function() {
+            initCraterMarking();
+        });
+
+        // Remove the existing drawBtn event listener and hide the button
+        document.getElementById('drawBtn').style.display = 'none';
+        
+        // Load a random tile
+        function loadRandomTile() {
+            showLoading(true);
+            updateStatus('Loading a random tile...');
+            
+            // Initialize map if it doesn't exist
+            if (!map) {
+                initMap();
+            }
+            
+            // Clear existing layers
+            if (imageOverlay) {
+                map.removeLayer(imageOverlay);
+            }
+            if (buildingsLayer) {
+                map.removeLayer(buildingsLayer);
+            }
+            
+            fetch('/get_random_tile')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        updateStatus(`Error: ${data.error}`);
+                        return;
+                    }
+                    
+                    currentRow = data.row;
+                    currentCol = data.col;
+                    
+                    // Reset building states
+                    buildingStates = {};
+                    
+                    // Update tile info
+                    tileInfoSpan.textContent = `Row ${currentRow}, Col ${currentCol}`;
+                    
+                    // Add the image overlay
+                    const bounds = L.latLngBounds(
+                        L.latLng(data.bounds[0][0], data.bounds[0][1]),
+                        L.latLng(data.bounds[1][0], data.bounds[1][1])
+                    );
+                    
+                    imageOverlay = L.imageOverlay(data.image_url, bounds, {
+                        opacity: 1.0
+                    }).addTo(map);
+                    
+                    // Fit the map to the bounds with maxZoom to fill viewport
+                    map.fitBounds(bounds, {
+                        padding: [10, 10],  // Add a small padding
+                        maxZoom: 22         // Increase from 19 to 22 to enable more zooming in
+                    });
+                    
+                    // Add these lines after fitBounds to enable unrestricted zooming
+                    map.setMinZoom(0);  // Allow zooming out completely
+                    map.setMaxZoom(30); // Allow extreme zooming in
+                    
+                    // Add the building footprints
+                    addBuildingFootprints(data.buildings);
+                    
+                    // Reset draw control
+                    if (map.drawControl) {
+                        map.removeControl(map.drawControl);
+                        map.drawControl = null;
+                    }
+                    
+                    // Reset craters
+                    craters = [];
+                    if (craterLayer) {
+                        craterLayer.clearLayers();
+                    }
+                    updateCraterCount();
+                    
+                    updateStatus(`Loaded tile: Row ${currentRow}, Col ${currentCol}. Click on buildings to mark them.`);
+                })
+                .catch(error => {
+                    updateStatus(`Error: ${error.message}`);
+                })
+                .finally(() => {
+                    showLoading(false);
+                });
+        }
+        
+        // Add building footprints to the map
+        function addBuildingFootprints(geojson) {
+            // Initialize all buildings as intact
+            for (let i = 0; i < geojson.features.length; i++) {
+                const feature = geojson.features[i];
+                const id = feature.id || feature.properties['@id'] || i;
+                const cleanId = String(id).replace(/\//g, '_');
+                buildingStates[cleanId] = 'intact';
+            }
+            
+            // Add the GeoJSON layer
+            buildingsLayer = L.geoJSON(geojson, {
+                style: function(feature) {
+                    return {
+                        fillColor: 'green',
+                        color: '#3a86ff',       // Change to gray
+                        weight: 1,           // Thinner line
+                        opacity: 0.7,        // Faint gray outline (changed from 0)
+                        fillOpacity: 0.0     // Still no fill
+                    };
+                },
+                onEachFeature: function(feature, layer) {
+                    // Get a unique ID for the building
+                    const id = feature.id || feature.properties['@id'] || geojson.features.indexOf(feature);
+                    const cleanId = String(id).replace(/\//g, '_');
+                    
+                    // Store the ID on the layer
+                    layer.buildingId = cleanId;
+                    
+                    // Add tooltip with a much larger offset to position it above the image
+                    if (feature.properties) {
+                        let tooltipContent = '';
+                        if (feature.properties.building) {
+                            tooltipContent += `Building Type: ${feature.properties.building}<br>`;
+                        }
+                        tooltipContent += `ID: ${cleanId}`;
+                        layer.bindTooltip(tooltipContent, {
+                            direction: 'top',
+                            offset: L.point(0, -50),  // Much larger offset to position above the image
+                            opacity: 0.9,
+                            className: 'building-tooltip',  // Add a custom class for additional styling
+                            permanent: false,  // Only show on hover
+                            sticky: false      // Don't follow the mouse
+                        });
+                    }
+                    
+                    // Add mouseover event to show outline
+                    layer.on('mouseover', function(e) {
+                        const currentState = buildingStates[cleanId] || 'intact';
+                        const hoverColor = currentState === 'intact' ? 'red' : 'green'; // Show opposite color on hover
+                        
+                        this.setStyle({
+                            opacity: 1, // Show outline on hover
+                            color: hoverColor
+                        });
+                    });
+                    
+                    // Add mouseout event to hide outline if not clicked
+                    layer.on('mouseout', function(e) {
+                        const currentState = buildingStates[cleanId] || 'intact';
+                        
+                        // If the building hasn't been clicked (marked), hide the outline
+                        if (currentState === 'intact' && this.options.fillOpacity === 0) {
+                            this.setStyle({
+                                opacity: 0 // Hide outline when not hovering
+                            });
+                        }
+                    });
+                    
+                    // Add click handler
+                    layer.on('click', function(e) {
+                        const currentState = buildingStates[cleanId] || 'intact';
+                        const newState = currentState === 'intact' ? 'damaged' : 'intact';
+                        
+                        // Update the state
+                        buildingStates[cleanId] = newState;
+                        
+                        // Update the style
+                        if (newState === 'damaged') {
+                            // If marked as damaged, show red with some opacity
+                            this.setStyle({
+                                fillColor: 'red',
+                                color: 'red',
+                                opacity: 1,
+                                fillOpacity: 0.2
+                            });
+                        } else {
+                            // If marked as intact, hide the fill and outline
+                            this.setStyle({
+                                fillColor: 'green',
+                                color: 'green',
+                                opacity: 0,
+                                fillOpacity: 0.0
+                            });
+                        }
+                        
+                        // Update the status
+                        updateBuildingCounts();
+                        updateStatus(`Building ${cleanId} marked as ${newState}`);
+                        
+                        // Stop propagation to prevent map click
+                        L.DomEvent.stopPropagation(e);
+                    });
+                }
+            }).addTo(map);
+            
+            // Update building counts
+            updateBuildingCounts();
+        }
+        
+        // Update the building counts in the sidebar
+        function updateBuildingCounts() {
+            const totalCount = Object.keys(buildingStates).length;
+            const damagedCount = Object.values(buildingStates).filter(state => state === 'damaged').length;
+            
+            buildingCountSpan.textContent = totalCount;
+            damagedCountSpan.textContent = damagedCount;
+        }
+        
+        // Save the training data
+        function saveTrainingData() {
+            if (!currentRow || !currentCol) {
+                updateStatus('No tile loaded. Please load a tile first.');
+                return;
+            }
+            
+            showLoading(true);
+            updateStatus('Saving training data...');
+            
+            fetch('/save_training_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    row: currentRow,
+                    col: currentCol,
+                    buildingStates: buildingStates,
+                    craters: craters
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    updateStatus(`Error: ${data.error}`);
+                    return;
+                }
+                
+                updateStatus(`Success: ${data.message}`);
+                console.log("Saved images:", data.saved_images ? data.saved_images.length : 0);
+                console.log("Saved craters:", data.saved_craters ? data.saved_craters.length : 0);
+            })
+            .catch(error => {
+                updateStatus(`Error: ${error.message}`);
+            })
+            .finally(() => {
+                showLoading(false);
+            });
+        }
+        
+        // Helper functions
+        function updateStatus(message) {
+            statusDiv.textContent = message;
+        }
+        
+        function showLoading(show) {
+            loadingDiv.style.display = show ? 'block' : 'none';
+            saveBtn.disabled = show;
+            loadBtn.disabled = show;
+        }
+        
+        // Initialize the map when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
+
+        // Replace the initDrawControl function with this version
+        function initDrawControl() {
+            // Remove existing draw control if it exists
+            if (map.drawControl) {
+                map.removeControl(map.drawControl);
+            }
+            
+            // Create draw control with freehand option
+            const drawControl = new L.Control.Draw({
+                draw: {
+                    polyline: false,
+                    polygon: false,
+                    circle: false,
+                    rectangle: false,
+                    marker: false,
+                    circlemarker: false
+                },
+                edit: false
+            });
+            
+            map.drawControl = drawControl;
+            map.addControl(drawControl);
+            
+            // Clear any existing drawn items layer
+            if (map.drawnItems) {
+                map.removeLayer(map.drawnItems);
+            }
+            
+            // Create a layer to hold drawn items
+            map.drawnItems = new L.FeatureGroup();
+            map.addLayer(map.drawnItems);
+            
+            // Handle the created shape
+            map.off(L.Draw.Event.CREATED); // Remove any existing handlers
+            map.on(L.Draw.Event.CREATED, function(event) {
+                const layer = event.layer;
+                const shape = layer.toGeoJSON();
+                
+                // Mark buildings within the shape as damaged
+                markBuildingsInShape(shape);
+                
+                // Remove the drawn shape immediately
+                map.removeLayer(layer);
+            });
+        }
+
+        // Add this function to mark buildings within a shape
+        function markBuildingsInShape(shape) {
+            let buildingsMarked = 0;
+            
+            // Check each building
+            buildingsLayer.eachLayer(function(layer) {
+                // Get the building ID
+                const buildingId = layer.buildingId;
+                
+                // Check if the building intersects with the drawn shape
+                if (turf.booleanIntersects(layer.toGeoJSON(), shape)) {
+                    // Mark as damaged if currently intact
+                    if (buildingStates[buildingId] === 'intact') {
+                        buildingStates[buildingId] = 'damaged';
+                        buildingsMarked++;
+                        
+                        // Update the style
+                        layer.setStyle({
+                            fillColor: 'red',
+                            color: 'red',
+                            opacity: 1,
+                            fillOpacity: 0.2
+                        });
+                    }
+                }
+            });
+            
+            // Update the counts
+            updateBuildingCounts();
+            updateStatus(`Marked ${buildingsMarked} buildings as damaged within the drawn area.`);
+        }
+
+        // Update the initFreehandDrawing function to properly handle mode switching
+        function initFreehandDrawing() {
+            // First, exit any other active modes
+            exitCraterMarking();
+            
+            // Update button states - ensure only draw is active
+            document.getElementById('drawControlBtn').classList.add('active');
+            document.getElementById('moveControlBtn').classList.remove('active');
+            document.getElementById('craterControlBtn').classList.remove('active');
+            
+            // Disable map dragging during drawing
+            map.dragging.disable();
+            
+            // Variables to track drawing state
+            let isDrawing = false;
+            let points = [];
+            let polyline = null;
+            let polygon = null;
+            
+            // Add mouse event handlers
+            map.on('mousedown', onMouseDown);
+            map.on('mousemove', onMouseMove);
+            map.on('mouseup', onMouseUp);
+            
+            function onMouseDown(e) {
+                isDrawing = true;
+                points = [e.latlng];
+                
+                // Start a new polyline with dotted style
+                polyline = L.polyline([e.latlng], {
+                    color: '#f44336',
+                    weight: 3,
+                    dashArray: '5, 10', // Make the line dotted
+                    lineCap: 'round'
+                }).addTo(map);
+                
+                // Prevent default to avoid map interactions
+                L.DomEvent.preventDefault(e.originalEvent);
+            }
+            
+            function onMouseMove(e) {
+                if (!isDrawing) return;
+                
+                // Add point to the line
+                points.push(e.latlng);
+                polyline.setLatLngs(points);
+                
+                // If we have at least 3 points, show a preview of the closed polygon
+                if (points.length >= 3) {
+                    // Create a copy of points with the first point added to the end
+                    const closedPoints = [...points, points[0]];
+                    
+                    // Remove previous polygon if it exists
+                    if (polygon) {
+                        map.removeLayer(polygon);
+                    }
+                    
+                    // Create a new polygon
+                    polygon = L.polygon(closedPoints, {
+                        color: '#f44336',
+                        weight: 2,
+                        dashArray: '5, 10',
+                        fillColor: '#f44336',
+                        fillOpacity: 0.1
+                    }).addTo(map);
+                }
+                
+                // Prevent default to avoid map interactions
+                L.DomEvent.preventDefault(e.originalEvent);
+            }
+            
+            function onMouseUp(e) {
+                if (!isDrawing) return;
+                
+                // Close the polygon by adding the first point again
+                if (points.length > 2) {
+                    points.push(points[0]);
+                    
+                    // Create a polygon from the points
+                    const shape = polygon ? polygon.toGeoJSON() : L.polygon(points).toGeoJSON();
+                    markBuildingsInShape(shape);
+                    
+                    // Remove the polyline and polygon
+                    map.removeLayer(polyline);
+                    if (polygon) {
+                        map.removeLayer(polygon);
+                    }
+                    
+                    // Reset for next drawing but stay in draw mode
+                    isDrawing = false;
+                    points = [];
+                    polyline = null;
+                    polygon = null;
+                    
+                    updateStatus('Area marked. Continue drawing or click Move to exit draw mode.');
+                } else {
+                    // Not enough points, just remove the polyline
+                    map.removeLayer(polyline);
+                    updateStatus('Drawing canceled - not enough points. Try again.');
+                    
+                    // Reset for next drawing
+                    isDrawing = false;
+                    points = [];
+                    polyline = null;
+                    if (polygon) {
+                        map.removeLayer(polygon);
+                        polygon = null;
+                    }
+                }
+                
+                // Prevent default to avoid map interactions
+                L.DomEvent.preventDefault(e.originalEvent);
+            }
+        }
+
+        // Update the exitDrawingMode function
+        function exitDrawingMode() {
+            // Update button states
+            document.getElementById('drawControlBtn').classList.remove('active');
+            document.getElementById('moveControlBtn').classList.add('active');
+            document.getElementById('craterControlBtn').classList.remove('active');
+            
+            // Re-enable map dragging
+            map.dragging.enable();
+            
+            // Remove drawing event handlers
+            map.off('mousedown');
+            map.off('mousemove');
+            map.off('mouseup');
+            
+            updateStatus('Exited draw mode. Map movement enabled.');
+        }
+
+        // Update the initCraterMarking function
+        function initCraterMarking() {
+            // Check if we're already in crater mode
+            const craterBtn = document.getElementById('craterControlBtn');
+            const isAlreadyInCraterMode = craterBtn.classList.contains('active');
+            
+            if (isAlreadyInCraterMode) {
+                // If already in crater mode, exit it (toggle off)
+                exitCraterMarking();
+                return;
+            }
+            
+            // Exit drawing mode if active
+            exitDrawingMode();
+            
+            // Update button states - ensure only crater is active
+            document.getElementById('drawControlBtn').classList.remove('active');
+            document.getElementById('moveControlBtn').classList.remove('active');
+            craterBtn.classList.add('active');
+            
+            // Initialize crater layer if needed
+            if (!craterLayer) {
+                craterLayer = L.layerGroup().addTo(map);
+            }
+            
+            // Disable map dragging
+            map.dragging.disable();
+            
+            // Add mouse event handlers
+            map.on('mousedown', onCraterMouseDown);
+            map.on('mousemove', onCraterMouseMove);
+            map.on('mouseup', onCraterMouseUp);
+            
+            updateStatus('Click and drag to create a crater. Click an existing crater to remove it.');
+        }
+
+        // Mouse down handler for crater creation
+        function onCraterMouseDown(e) {
+            // Check if we clicked on an existing crater
+            let clickedOnCrater = false;
+            
+            craterLayer.eachLayer(function(layer) {
+                if (layer.getLatLng && layer.getBounds) {
+                    const center = layer.getLatLng();
+                    const bounds = layer.getBounds();
+                    const radius = center.distanceTo(bounds.getNorthEast());
+                    
+                    // Calculate distance from click to crater center
+                    const distance = e.latlng.distanceTo(center);
+                    
+                    // If click is within the crater, remove it
+                    if (distance <= radius) {
+                        craterLayer.removeLayer(layer);
+                        
+                        // Remove from craters array
+                        const index = craters.findIndex(c => 
+                            c.lat === center.lat && c.lng === center.lng && c.radius === radius);
+                        
+                        if (index !== -1) {
+                            craters.splice(index, 1);
+                            // Update the crater count
+                            updateCraterCount();
+                        }
+                        
+                        clickedOnCrater = true;
+                        updateStatus('Crater removed. Click and drag to create a new one.');
+                        return;
+                    }
+                }
+            });
+            
+            // If we didn't click on an existing crater, start creating a new one
+            if (!clickedOnCrater) {
+                isCreatingCrater = true;
+                const center = e.latlng;
+                
+                // Create a new circle with initial radius of 1 meter
+                currentCrater = L.circle(center, {
+                    radius: 1,
+                    color: '#FF4500',
+                    fillColor: '#FF4500',
+                    fillOpacity: 0.3,
+                    weight: 2
+                }).addTo(craterLayer);
+            }
+            
+            // Prevent default to avoid map interactions
+            L.DomEvent.preventDefault(e.originalEvent);
+        }
+
+        // Mouse move handler for crater creation
+        function onCraterMouseMove(e) {
+            if (!isCreatingCrater || !currentCrater) return;
+            
+            // Calculate radius based on distance from center to current mouse position
+            const center = currentCrater.getLatLng();
+            const radius = center.distanceTo(e.latlng);
+            
+            // Update the circle radius
+            currentCrater.setRadius(radius);
+            
+            // Prevent default to avoid map interactions
+            L.DomEvent.preventDefault(e.originalEvent);
+        }
+
+        // Mouse up handler for crater creation
+        function onCraterMouseUp(e) {
+            if (!isCreatingCrater || !currentCrater) return;
+            
+            // Finalize the crater
+            const center = currentCrater.getLatLng();
+            const radius = currentCrater.getRadius();
+            
+            // Only add if radius is meaningful
+            if (radius > 1) {
+                // Add to craters array
+                craters.push({
+                    lat: center.lat,
+                    lng: center.lng,
+                    radius: radius
+                });
+                
+                // Update the crater count
+                updateCraterCount();
+                
+                updateStatus(`Crater added at ${center.lat.toFixed(6)}, ${center.lng.toFixed(6)} with radius ${radius.toFixed(2)}m`);
+            } else {
+                // Remove tiny craters
+                craterLayer.removeLayer(currentCrater);
+                updateStatus('Crater too small, not added. Try again with a larger radius.');
+            }
+            
+            // Reset state
+            isCreatingCrater = false;
+            currentCrater = null;
+            
+            // Prevent default to avoid map interactions
+            L.DomEvent.preventDefault(e.originalEvent);
+        }
+
+        // Add this function to exit crater marking mode
+        function exitCraterMarking() {
+            // Update button states
+            document.getElementById('craterControlBtn').classList.remove('active');
+            document.getElementById('moveControlBtn').classList.add('active');
+            
+            // Re-enable map dragging
+            map.dragging.enable();
+            
+            // Remove event handlers
+            map.off('mousedown', onCraterMouseDown);
+            map.off('mousemove', onCraterMouseMove);
+            map.off('mouseup', onCraterMouseUp);
+            
+            updateStatus('Exited crater marking mode. Map movement enabled.');
+        }
+
+        // Add this function to update the crater count
+        function updateCraterCount() {
+            const craterCountSpan = document.getElementById('craterCount');
+            craterCountSpan.textContent = craters.length;
+        }
+
+        // Add this after the existing event listeners
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Only respond if not in an input field
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+            
+            // Convert to lowercase to make case-insensitive
+            const key = e.key.toLowerCase();
+            
+            switch (key) {
+                case 'd': // Draw mode
+                    document.getElementById('drawControlBtn').click();
+                    break;
+                case 'h': // Hand (move) mode
+                    document.getElementById('moveControlBtn').click();
+                    break;
+                case 'c': // Circle (crater) mode
+                    document.getElementById('craterControlBtn').click();
+                    break;
+                case 's': // Save
+                    document.getElementById('saveBtn').click();
+                    break;
+                case 'l': // Load
+                    document.getElementById('loadBtn').click();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html> 

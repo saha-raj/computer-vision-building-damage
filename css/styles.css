@@ -936,14 +936,15 @@ button:disabled {
 
 /* Map container for interactive maps */
 .map-container {
-    background-color: var(--sim-bg);
+    background-color: transparent;
     margin: 3rem 0;
     width: 100vw;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
-    padding: 2rem;
+    padding: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -957,6 +958,7 @@ button:disabled {
     justify-content: center;
     padding: 10px;
     height: 600px; /* Default height for maps */
+    background-color: transparent;
 }
 
 .map-content {
@@ -964,6 +966,23 @@ button:disabled {
     height: 100%;
     border-radius: 4px;
     overflow: hidden;
+    background-color: transparent;
+}
+
+/* Map caption styling */
+.map-container .caption {
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+    text-align: center;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #666;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 2rem;
+    clear: both;
 }
 
 /* Map popup and legend styling */
@@ -1461,4 +1480,50 @@ video {
 .media-container video.full-width-image::-webkit-media-controls {
     display: flex !important;
     visibility: visible !important;
+}
+
+/* Add CSS for map controls */
+.map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    padding: 5px;
+}
+
+.control-btn {
+    width: 30px;
+    height: 30px;
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 0 2px;
+    cursor: pointer;
+}
+
+.control-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.control-btn.active {
+    background-color: #e3f2fd;
+    border-color: #2196F3;
+}
+
+/* SVG icons for the buttons */
+#draw-buildings-btn {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>');
+}
+
+#draw-craters-btn {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>');
+}
+
+#clear-selections-btn {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');
 }

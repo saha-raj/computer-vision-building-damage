@@ -1,0 +1,59 @@
+flowchart LR
+    subgraph DC["Data Collection"]
+        ATS["Automated Tiled Screenshots"]
+        BSI["Before Satellite (2022)"]
+        ASI["After Satellite (2023)"]
+        BF["Building Footprints (OSM)"]
+    end
+    
+    subgraph DP["Data Processing"]
+        GTR["Geo-referencing Tile/Screenshot Images"]
+        BIE["Building Image Extraction"]
+    end
+    
+    subgraph ML["Manual Labeling"]
+        AT1["Annotation Tool"]
+        LDB["Label Damaged Buildings"]
+        MC["Mark Craters"]
+    end
+    
+    subgraph MT["Model Training & Inference"]
+        STN["Siamese Twin Network"]
+        MTraining["Model Training"]
+        TDM["Trained Model"]
+        IE["Inference Engine"]
+    end
+    
+    subgraph PR["Prediction Refinement"]
+        IP["Initial Predictions"]
+        AT2["Annotation Tool"]
+        RP["Refined Predictions"]
+    end
+    
+    subgraph OV["Output & Visualization"]
+        GE["GeoJSON Export"]
+        WI["Web Interface"]
+    end
+    
+    ATS --> BSI
+    ATS --> ASI
+    BSI --> GTR
+    ASI --> GTR
+    BF --> GTR
+    GTR --> BIE
+    GTR --> AT1
+    BF --> BIE
+    BIE --> AT1
+    AT1 --> LDB
+    AT1 --> MC
+    LDB --> STN
+    MC --> STN
+    STN --> MTraining
+    MTraining --> TDM
+    TDM --> IE
+    BIE --> IE
+    IE --> IP
+    IP --> AT2
+    AT2 --> RP
+    RP --> GE
+    GE --> WI

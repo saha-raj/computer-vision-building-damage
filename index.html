@@ -40,8 +40,10 @@
                     <!-- Map will be initialized here by JavaScript -->
                 </div>
             </div>
-            <!-- <p class="caption">Interactive map showing building damage assessment from satellite imagery.</p> -->
+            <p class="caption">Interactive map showing building damage assessment from satellite imagery.</p>
         </div>
+
+
 
 
         <div class="text-block">
@@ -49,6 +51,22 @@
             
             <p>some text. </p>
 
+        </div>
+
+        <!-- Building selection tool demo container -->
+        <div class="map-container">
+            <div class="map-inner">
+                <div class="map-content" id="building-selector-map">
+                    <!-- Building selection tool map will be initialized here by JavaScript -->
+                    <!-- Map controls placed inside the map content -->
+                    <div class="map-controls">
+                        <button id="draw-buildings-btn" class="control-btn" title="Draw Building Selection"></button>
+                        <button id="draw-craters-btn" class="control-btn" title="Mark Craters"></button>
+                        <button id="clear-selections-btn" class="control-btn" title="Clear All Selections"></button>
+                    </div>
+                </div>
+            </div>
+            <p class="caption">Building selection tool demo (focused on tile row 9, col 6)</p>
         </div>
 
         <div class="media-container">
@@ -112,6 +130,7 @@
      
     <!-- Custom map scripts -->
     <script src="assets/js/maps/damage-map.js"></script>
+    <script src="assets/js/maps/building-selector-map.js"></script>
     
 </body>
 </html> 
