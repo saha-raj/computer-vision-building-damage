@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Comparison Slider Example</title>
+    
+    <!-- Your site's existing CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    
+    <!-- Compare Slider CSS -->
+    <link rel="stylesheet" href="assets/css/compare-slider.css">
+    
+    <style>
+        /* Example styling to match your existing containers */
+        .media-container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .media-container h3 {
+            margin-top: 0;
+            color: #495057;
+            font-family: 'Lato', sans-serif;
+        }
+        
+        .media-container p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Building Damage Detection Example</h1>
+        
+        <!-- Example of compare slider in a media container -->
+        <div class="media-container">
+            <h3>Satellite Image Comparison: 2022 vs 2023</h3>
+            <p>Drag the slider to compare images before and after the conflict. Green boxes represent existing buildings, red boxes show damaged structures.</p>
+            
+            <!-- This is where you place the compare container -->
+            <div id="satellite-compare" class="compare-container">
+                <div class="compare-images">
+                    <img class="before-image" src="assets/images/compare_2_2_2022.png" alt="February 2022">
+                    <img class="after-image" src="assets/images/compare_2_2_2023.png" alt="February 2023">
+                </div>
+                <div class="compare-slider">
+                    <div class="slider-handle">
+                        <div class="handle-line"></div>
+                        <div class="handle-arrows">
+                            <div class="arrow-left">◄</div>
+                            <div class="arrow-right">►</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="compare-labels">
+                    <div class="before-label">February 2022</div>
+                    <div class="after-label">February 2023</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Alternative implementation using JavaScript function -->
+        <div class="media-container">
+            <h3>Another Example (Using JavaScript)</h3>
+            <p>This example shows how to add a comparison slider using JavaScript.</p>
+            
+            <!-- Empty container that will be filled by JavaScript -->
+            <div id="js-compare-container"></div>
+        </div>
+    </div>
+    
+    <!-- Include the comparison slider JavaScript -->
+    <script src="assets/js/compare-slider.js"></script>
+    
+    <script>
+        // Example of using the JavaScript function to add a slider
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add comparison slider using the JavaScript function
+            addComparisonSlider(
+                'js-compare-container',
+                'assets/images/compare_2_2_2022.png',
+                'assets/images/compare_2_2_2023.png',
+                'Before (2022)',
+                'After (2023)'
+            );
+        });
+    </script>
+</body>
+</html> 

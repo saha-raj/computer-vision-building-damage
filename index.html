@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Machine Vision and Satellite Imagery</title>
+    <title>Computer Vision and Satellite Imagery</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,11 +17,14 @@
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="assets/css/leaflet.css"/>
+    
+    <!-- Compare Slider CSS -->
+    <link rel="stylesheet" href="assets/css/compare-slider.css"/>
 </head>
 <body>
     <div class="content">
         <div class="text-block">
-            <h1>Machine Vision & Custom Tools to Assess Building Damage from Satellite Images</h1>
+            <h1>Using Computer Vision to Assess Building Damage from Satellite Imagery</h1>
             <div class="author">
                 <p>By Raj Saha, PhD</p>
             </div>
@@ -68,6 +71,28 @@
             </div>
             <p class="caption">Building selection tool demo (focused on tile row 9, col 6)</p>
         </div>
+        
+        <!-- Image Comparison Slider -->
+        <div class="media-container">
+            <div class="full-width-image">
+                <div class="compare-container">
+                    <div class="compare-images">
+                        <img class="before-image" src="images/compare_2_2_2022.png" alt="2022">
+                        <img class="after-image" src="images/compare_2_2_2023.png" alt="2023">
+                    </div>
+                    <div class="compare-slider">
+                        <div class="slider-handle">
+                            <div class="handle-line"></div>
+                        </div>
+                    </div>
+                    <div class="compare-labels">
+                        <div class="before-label">2022</div>
+                        <div class="after-label">2023</div>
+                    </div>
+                </div>
+            </div>
+            <p class="caption">Before and after satellite imagery comparison.</p>
+        </div>
 
         <div class="text-block">
             <h2>Process Overview</h2>
@@ -89,13 +114,13 @@
              <p class="caption">End-to-end process flow. Click a stage for details.</p>
         </div>
 
-        <div class="media-container">
+        <!-- <div class="media-container">
             <img src="images/combo_0131.png" alt="Fireflies synchronizing their flashes" class="full-width-image">
             <p class="caption">Fireflies synchronizing their flashes in a forest. The patterns emerge from simple individual
                 behaviors.</p>
-        </div>
+        </div> -->
 
-        <div class="text-block">
+        <!-- <div class="text-block">
             <div class="citation">
                 <p>
                     <strong>Reference:</strong> Damon Centola, Joshua Becker, Devon Brackbill, and Andrea Baronchelli.
@@ -104,7 +129,7 @@
                     DOI: <a href="https://doi.org/10.1126/science.aas8827" target="_blank">10.1126/science.aas8827</a>
                 </p>
             </div>
-        </div>
+        </div> -->
 
         
 
@@ -156,6 +181,8 @@
     <script src="assets/js/maps/building-selector-map.js"></script>
     <!-- Process diagram script -->
     <script src="assets/js/process-diagram.js"></script>
+    <!-- Compare slider script -->
+    <script src="assets/js/compare-slider.js"></script>
     
 </body>
 </html> 

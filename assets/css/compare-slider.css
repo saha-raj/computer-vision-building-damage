@@ -1,0 +1,163 @@
+/**
+ * compare-slider.css
+ * Styles for the before/after image comparison slider
+ */
+
+/* Container for the comparison slider */
+.compare-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+.full-width-image {
+    width: 90%;
+    max-width: 1200px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: none;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Image container */
+.compare-images {
+    position: relative;
+    width: 100%;
+    line-height: 0;
+}
+
+/* Both before and after images */
+.compare-images img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+}
+
+/* Before image (will be clipped) */
+.before-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    clip-path: inset(0 50% 0 0);
+    -webkit-clip-path: inset(0 50% 0 0);
+}
+
+/* After image (always shown in full) */
+.after-image {
+    width: 100%;
+}
+
+/* The slider divider */
+.compare-slider {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    cursor: col-resize;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+/* Slider handle (the draggable part) */
+.slider-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 28px;
+    height: 28px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+/* Handle line (visible divider inside handle) */
+.handle-line {
+    position: absolute;
+    width: 2px;
+    height: 16px;
+    background-color: #666;
+}
+
+/* Remove the handle arrows completely */
+.handle-arrows {
+    display: none;
+}
+
+/* Left arrow */
+.arrow-left {
+    display: none;
+}
+
+/* Right arrow */
+.arrow-right {
+    display: none;
+}
+
+/* Labels container */
+.compare-labels {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 10;
+    font-size: 18px;
+}
+
+/* Before label */
+.before-label {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+/* After label */
+.after-label {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+/* Styling for when the slider is being dragged */
+.is-dragging .slider-handle {
+    background-color: #f0f0f0;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 600px) {
+    .slider-handle {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .handle-line {
+        height: 14px;
+    }
+    
+    .compare-labels {
+        font-size: 16px;
+    }
+} 
