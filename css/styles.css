@@ -927,11 +927,12 @@ button:disabled {
     font-size: 0.9rem;
     color: #666;
     margin-top: 1rem;
-    text-align: center;
-    font-style: italic;
+    text-align: left;
+    font-style: normal;
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 1rem;
 } 
 
 /* Map container for interactive maps */
@@ -974,14 +975,14 @@ button:disabled {
     display: block;
     width: 100%;
     margin-top: 1rem;
-    text-align: center;
-    font-style: italic;
+    text-align: left;
+    font-style: normal;
     font-size: 0.9rem;
     color: #666;
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
-    padding: 0 2rem;
+    padding: 0 1rem;
     clear: both;
 }
 
@@ -1572,6 +1573,16 @@ video {
     padding: 5px;
 }
 
+/* URL styling */
+a {
+    color: #00a5cf;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0083A3;
+}
+
 .control-btn {
     width: 30px;
     height: 30px;
@@ -1609,7 +1620,7 @@ video {
 /* Add these styles to your existing CSS file */
 
 .process-flow-container {
-    margin: 3rem 0;      /* Vertical margins */
+    margin: 3rem 0 5rem 0;      /* Increased bottom margin */
     width: 100vw;        /* Full viewport width */
     position: relative;  /* Needed for centering trick */
     left: 50%;           /* Part of centering trick */

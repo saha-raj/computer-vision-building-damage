@@ -30,10 +30,20 @@
             </div>
             
             <p>
-                some text here. some text here. some text here. some text here. some text here
+                <b>Disclaimer:</b> This site is a technical demonstration only. The analysis, data, and visualizations presented are for
+                illustrative purposes and should not be used as a source of news or information.
             </p>
-            
-            
+
+            <p>
+                Access to satellite imagery and building footprint data can be limited, particularly in geopolitically sensitive areas.
+                This project examines one such conflict zone with before-after satellite imagery to identify damaged buildings and bomb
+                craters. An analysis like this requires high resolution (0.5m) historical satellite imagery, which in this particular
+                case is not readily available for download. However, there are viewable data sources like Google Earth Web with
+                sufficient spatial and historical resolution, just that the imagery is not directly usable for analysis. So this project
+                builds an array of tools to systematically gather the viewable imagery and post-process the imagery for geospatial
+                analysis.
+            </p>
+
         </div>
 
         <!-- Interactive map container -->
@@ -43,35 +53,26 @@
                     <!-- Map will be initialized here by JavaScript -->
                 </div>
             </div>
-            <p class="caption">Interactive map showing building damage assessment from satellite imagery.</p>
+            <p class="caption">Map showing locations of damaged buildings based on manual annotations and model predictions. Also overlaid are locations of bomb craters. 
+                At high zoom, the satellite imagery is visible. All three layers can be toggled on and off in the legend.</p>
         </div>
 
 
 
 
         <div class="text-block">
-            <h2>some header</h2>
+            <h2>Data Sources</h2>
             
-            <p>some text. </p>
+            <p>
+                <ul>
+                    <li>Imagery: Google Earth's web interface from 2022 and 2023 (latest available).</li>
+                    
+                    <li>Building Footprints: Building footprint data from Open Street Maps was obtained through <a href="https://overpass-turbo.eu/" target="_blank">https://overpass-turbo.eu/</a>.</li>
+                </ul>
+            </p>
 
         </div>
 
-        <!-- Building selection tool demo container -->
-        <div class="map-container">
-            <div class="map-inner">
-                <div class="map-content" id="building-selector-map">
-                    <!-- Building selection tool map will be initialized here by JavaScript -->
-                    <!-- Map controls placed inside the map content -->
-                    <div class="map-controls">
-                        <button id="draw-buildings-btn" class="control-btn" title="Draw Building Selection"></button>
-                        <button id="draw-craters-btn" class="control-btn" title="Mark Craters"></button>
-                        <button id="clear-selections-btn" class="control-btn" title="Clear All Selections"></button>
-                    </div>
-                </div>
-            </div>
-            <p class="caption">Building selection tool demo (focused on tile row 9, col 6)</p>
-        </div>
-        
         <!-- Image Comparison Slider -->
         <div class="media-container">
             <div class="full-width-image">
@@ -91,13 +92,100 @@
                     </div>
                 </div>
             </div>
-            <p class="caption">Before and after satellite imagery comparison.</p>
+            <p class="caption">Before and after satellite imagery comparison with overlaid building footprints.</p>
         </div>
 
         <div class="text-block">
+            <h2>Methodology</h2>
+        
+            <p>
+            <ol>
+                <li>Data Collection
+                    <ul>
+                        <li>Before and after images, from 2022 and 2023 respectively, were obtained from Google Earth's web interface with automated
+                        screenshots tiled over a specified region. Each image tile covered roughly 590m x 290m ~ 0.17 sq. km and had slight
+                        overlap with adjoining image tiles for image alignment and fine tuning.</li>
+                        <li>Building footprint data from Open Street Maps was obtained through https://overpass-turbo.eu/.</li>
+                    </ul>
+                </li>
+                
+                <li>Data Processing
+                    <ul>
+                        <li>Image alignment: The image tiles were geo-referenced and aligned. Additional corrective adjustments were made to take
+                        into account the loss of precision due to the interface.</li>
+                        <li>Extraction of individual building images: Overlaying the building footprint polygons on the imagery allowed for the
+                        extraction of individual images of buildings in both before and after sets. These image pairs, with the help of manual
+                        annotations, would later be used to train a machine learning model to identify damaged buildings.</li>
+                    </ul>
+                </li>
+            </ol>
+            </p>
+        
+        </div>
+
+        <!-- Building selection tool demo container -->
+        <div class="map-container">
+            <div class="map-inner">
+                <div class="map-content" id="building-selector-map">
+                    <!-- Building selection tool map will be initialized here by JavaScript -->
+                    <!-- Map controls placed inside the map content -->
+                    <div class="map-controls">
+                        <button id="draw-buildings-btn" class="control-btn" title="Draw Building Selection"></button>
+                        <button id="draw-craters-btn" class="control-btn" title="Mark Craters"></button>
+                        <button id="clear-selections-btn" class="control-btn" title="Clear All Selections"></button>
+                    </div>
+                </div>
+            </div>
+            <p class="caption">This is a demo of the annotation tool over a single image tile. 
+                The drawing tool can be used to select multiple building polygons and toggle their damage status. 
+                The crater tool can be used to mark the position and size of bomb craters. </p>
+        </div>
+
+        <div class="text-block">        
+            <p>
+            <ol start="3">
+                <li>Annotation tool
+                    <ul>
+                        <li>Given the importance of making correct positive identifications, it is important to have a tool that
+                        allows for efficient manual annotations of the imagery.</li>
+                        <li>The web-based tool developed here randomly selects image tiles
+                        for annotation, has drawing tools to select and tag multiple building polygons, as well as to mark the locations and
+                        sizes of bomb craters to be used in a subsequent analysis to identify them in new imagery.</li>
+                    </ul>
+                </li>
+                
+                <li>Model Training
+                    <ul>
+                        <li>Roughly 50% of the image tiles were manually annotated to mark damaged buildings.</li>
+                        <li>This dataset was split into training (70%), validation (15%), and test (15%) sets to develop a Siamese Twin Network comparing before/after
+                        satellite images.</li>
+                        <li>The model achieved 0.79 recall on the test set (identifying 79% of damaged buildings).</li>
+                    </ul>
+                </li>
+                
+                <li>Predictions and Refinement
+                    <ul>
+                        <li>After the initial predictions, the annotation tool was used again to review and refine the
+                        prediction labels.</li>
+                    </ul>
+                </li>
+                
+                <li>Output and Visualization
+                    <ul>
+                        <li>The final set of annotated and predicted labels were put together in an interactive map.</li>
+                    </ul>
+                </li>
+            </ol>
+            </p>
+        
+        </div>
+        
+        <div class="text-block">
             <h2>Process Overview</h2>
             
-            <p>An overview of our methodology for building damage assessment using satellite imagery and machine learning.</p>
+            <p>
+                Here is a schematic overview of the process and workflow.
+            </p>
         </div>
 
         <!-- NEW SVG Containers -->
@@ -112,6 +200,33 @@
                  <button id="process-back-button" class="control-btn" title="Back to Overview">← Back</button>
             </div>
              <p class="caption">End-to-end process flow. Click a stage for details.</p>
+        </div>
+
+
+        <div class="text-block">
+            <h2>Uncertainties and Limitations</h2>
+        
+            <p>
+                The dataset used in this analysis presents several constraints – first that any manual or model based predictions can
+                only take into account how buildings and structures look from above. This means that the damage labels are likely to be
+                undercounts.
+            </p>
+
+            <p> 
+                Several image tiles, as obtained through Google Earth, were composites of imagery from different time periods as can be
+                seen with seams through the images. This also results in potential undercounts.
+            </p>
+
+            <p>
+                The downward viewing angle and shadows present another challenge for both models and human annotators to correctly
+                identify damaged structures.
+            </p>
+
+            <p>
+                Given as this project's scope is to mainly be a demo and a proof of concept, the model was not rigorously fine-tuned for
+                robustness. With additional time and computational resources the model's performance could likely be significantly
+                improved.
+            </p>
         </div>
 
         <!-- <div class="media-container">
