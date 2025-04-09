@@ -67,9 +67,8 @@ function initDamageMap() {
     
     // Load data for buildings, craters, dataset perimeter, and tile bounds
     Promise.all([
-        loadBuildingData('data/buildings_with_labels_stripped.geojson'),
+        loadBuildingPolygonData('data/building-polygons-labeled/'),
         loadCraterData('data/all_craters.json'),
-        // loadDatasetPerimeter('data/dataset_perimeter.geojson'),
         loadDatasetPerimeter('data/tile_perimeter.geojson'),
         loadTileBoundsData('data/tile_bounds_coords_adj.csv')
     ])
@@ -255,6 +254,78 @@ function initDamageMap() {
 }
 
 /**
+ * Load building polygon data from all GeoJSON files in the specified directory
+ * Files follow the pattern: buildings_row_i_col_j.geojson
+ */
+function loadBuildingPolygonData(dirPath) {
+    return new Promise((resolve, reject) => {
+        // First, we need to get a list of all available row-col combinations
+        fetch('data/tile_bounds_coords_adj.csv')
+            .then(response => response.text())
+            .then(csvText => {
+                const lines = csvText.trim().split('\n');
+                // Skip header line
+                const rowColCombinations = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(',');
+                    // Extract row and col values (should be first two columns)
+                    const row = parseInt(values[0], 10);
+                    const col = parseInt(values[1], 10);
+                    rowColCombinations.push({row, col});
+                }
+                
+                console.log(`Found ${rowColCombinations.length} tile combinations to load`);
+                
+                // Load all building files in parallel
+                const fileLoadPromises = rowColCombinations.map(({row, col}) => {
+                    const url = `${dirPath}buildings_row_${row}_col_${col}.geojson`;
+                    return fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                console.warn(`Could not load building data for row ${row}, col ${col}`);
+                                return null;
+                            }
+                            return response.json();
+                        })
+                        .catch(error => {
+                            console.error(`Error loading building data for row ${row}, col ${col}:`, error);
+                            return null;
+                        });
+                });
+                
+                // Wait for all files to be loaded
+                return Promise.all(fileLoadPromises);
+            })
+            .then(buildingDataArray => {
+                // Filter out nulls (failed loads)
+                const validBuildingData = buildingDataArray.filter(data => data !== null);
+                
+                console.log(`Successfully loaded ${validBuildingData.length} building data files`);
+                
+                // Combine all features into a single GeoJSON FeatureCollection
+                const combinedData = {
+                    type: 'FeatureCollection',
+                    features: []
+                };
+                
+                validBuildingData.forEach(data => {
+                    if (data.features && Array.isArray(data.features)) {
+                        combinedData.features = combinedData.features.concat(data.features);
+                    }
+                });
+                
+                console.log(`Combined ${combinedData.features.length} building features`);
+                resolve(combinedData);
+            })
+            .catch(error => {
+                console.error('Error loading building polygon data:', error);
+                reject(error);
+            });
+    });
+}
+
+/**
  * Load building damage data from GeoJSON file
  */
 function loadBuildingData(url) {
@@ -407,78 +478,64 @@ function displayBuildingDamageData(map, data, layerGroup) {
     
     // Filter the features to only include damaged buildings
     const damagedBuildings = data.features.filter(feature => 
-        feature.properties.is_damaged_labeled === "True"
+        feature.properties.is_damaged === "True" || feature.properties.is_damaged_labeled === "True"
     );
     
     // Create an array for heatmap points
     const heatmapPoints = [];
     
-    // Define marker sizes based on zoom
-    const DEFAULT_RADIUS = 4;
-    const ZOOMED_IN_RADIUS = 2; // Smaller radius when zoomed in
-    const ZOOM_THRESHOLD = 16;  // Match the main map's threshold
-    
-    // Function to update building marker sizes based on zoom level
-    function updateBuildingMarkerSizes(zoomLevel) {
-        layerGroup.eachLayer(function(layer) {
-            if (layer instanceof L.CircleMarker) {
-                if (zoomLevel >= ZOOM_THRESHOLD) {
-                    // Use smaller radius when zoomed in
-                    layer.setRadius(ZOOMED_IN_RADIUS);
-                } else {
-                    // Use default radius when zoomed out
-                    layer.setRadius(DEFAULT_RADIUS);
-                }
-            }
-        });
-    }
-    
-    // Create markers for damaged buildings
-    damagedBuildings.forEach(building => {
-        // Get the center coordinates of the building
-        const lat = building.properties.center_lat;
-        const lon = building.properties.center_lon;
-        
-        // Add point to heatmap array [lat, lng, intensity]
-        // We're using a constant intensity of 1 for each point
-        heatmapPoints.push([lat, lon, 1]);
-        
-        // Create a small red circle marker for each damaged building
-        const marker = L.circleMarker([lat, lon], {
-            radius: DEFAULT_RADIUS, // Start with default radius
-            fillColor: '#d73027',
-            color: '#edf2f4',    // White edge color
-            weight: 2,         // Thicker edge line
+    // Create a GeoJSON layer for damaged buildings
+    const buildingsGeoJSON = L.geoJSON(damagedBuildings, {
+        style: {
+            color: '#d73027',    // Red border color
+            weight: 2,           // Border width
             opacity: 1,
-            fillOpacity: 0.8,
-            pane: 'dataPane' // Use the custom data pane to stay on top
-        });
-        
-        // Add a popup with information about the building
-        marker.bindPopup(`
-            <div class="damage-popup">
-                <h3>Damaged Building</h3>
-                <p><strong>ID:</strong> ${building.properties.id}</p>
-                <p><strong>Location:</strong> ${lat.toFixed(5)}, ${lon.toFixed(5)}</p>
-            </div>
-        `);
-        
-        layerGroup.addLayer(marker);
+            fillColor: 'transparent', // No fill
+            fillOpacity: 0,      // Completely transparent fill
+            pane: 'dataPane'     // Use the custom data pane to stay on top
+        },
+        onEachFeature: function(feature, layer) {
+            // Get the center coordinates (either from properties or calculate centroid)
+            const lat = feature.properties.center_lat || calculateCentroid(feature.geometry.coordinates[0])[1];
+            const lon = feature.properties.center_lon || calculateCentroid(feature.geometry.coordinates[0])[0];
+            
+            // Add point to heatmap array [lat, lng, intensity]
+            // We're using a constant intensity of 1 for each point
+            heatmapPoints.push([lat, lon, 1]);
+            
+            // Add a popup with information about the building
+            layer.bindPopup(`
+                <div class="damage-popup">
+                    <h3>Damaged Building</h3>
+                    <p><strong>ID:</strong> ${feature.properties.id}</p>
+                    <p><strong>Location:</strong> ${lat.toFixed(5)}, ${lon.toFixed(5)}</p>
+                </div>
+            `);
+        }
     });
     
-    // Set initial marker sizes based on current zoom
-    updateBuildingMarkerSizes(map.getZoom());
-    
-    // Add a zoom change listener to update building marker sizes
-    map.on('zoomend', function() {
-        updateBuildingMarkerSizes(map.getZoom());
-    });
+    // Add the GeoJSON layer to our layer group
+    layerGroup.addLayer(buildingsGeoJSON);
     
     // Log the count of damaged buildings
-    console.log(`Displaying ${damagedBuildings.length} damaged buildings`);
+    console.log(`Displaying ${damagedBuildings.length} damaged buildings as polygons`);
     
     // Return the points for heatmap
     return heatmapPoints;
+}
+
+// Helper function to calculate centroid of a polygon
+function calculateCentroid(coords) {
+    // Simple centroid calculation for polygons
+    let sumX = 0;
+    let sumY = 0;
+    
+    for (let i = 0; i < coords.length; i++) {
+        sumX += coords[i][0];
+        sumY += coords[i][1];
+    }
+    
+    return [sumX / coords.length, sumY / coords.length];
 }
 
 /**
