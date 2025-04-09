@@ -9,3 +9,4 @@ Icon
 
 python/*
 templates/*
+data/buildings_with_labels.geojson
