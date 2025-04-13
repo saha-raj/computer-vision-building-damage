@@ -6,7 +6,66 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     initCompareSliders();
+    
+    // TEMPORARY: Automatically animate all sliders
+    // REMOVE THIS FUNCTION CALL WHEN ANIMATION IS NO LONGER NEEDED
+    autoAnimateSliders();
 });
+
+/**
+ * TEMPORARY FUNCTION - Auto-animate all comparison sliders
+ * This function makes sliders move side to side automatically for demonstration purposes
+ * Can be safely removed when no longer needed
+ */
+function autoAnimateSliders() {
+    const sliders = document.querySelectorAll('.compare-container');
+    if (sliders.length === 0) return;
+    
+    console.log('Starting automatic slider animations');
+    
+    // Animation parameters
+    const animationDuration = 3000; // 3 seconds for a full cycle
+    const minPosition = 10;  // Don't go all the way to the edge
+    const maxPosition = 90;  // Don't go all the way to the edge
+    
+    // Animate each slider
+    sliders.forEach(container => {
+        let direction = 1; // 1 = right, -1 = left
+        let currentPosition = 50; // Start in the middle
+        
+        // Create animation interval
+        const animationInterval = setInterval(() => {
+            // Update position based on direction
+            currentPosition += direction * 1; // Move 1% each step
+            
+            // Reverse direction if we hit a boundary
+            if (currentPosition >= maxPosition) {
+                direction = -1;
+                currentPosition = maxPosition;
+            } else if (currentPosition <= minPosition) {
+                direction = 1;
+                currentPosition = minPosition;
+            }
+            
+            // Update slider position
+            updateSliderPosition(container, currentPosition);
+        }, 30); // Update every 30ms for smooth movement
+        
+        // Store the interval ID on the container element for later cleanup if needed
+        container._animationInterval = animationInterval;
+    });
+    
+    // OPTIONAL: Uncomment this to automatically stop animation after 30 seconds
+    // setTimeout(() => {
+    //     console.log('Stopping automatic slider animations');
+    //     sliders.forEach(container => {
+    //         if (container._animationInterval) {
+    //             clearInterval(container._animationInterval);
+    //             container._animationInterval = null;
+    //         }
+    //     });
+    // }, 30000);
+}
 
 /**
  * Initialize all image comparison sliders on the page
