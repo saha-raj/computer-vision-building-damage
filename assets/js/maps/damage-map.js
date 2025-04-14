@@ -231,11 +231,11 @@ function initDamageMap() {
                 maxOpacity: 1,
                 // Use discrete levels with the specified color scheme (darkest to lightest)
                 gradient: {
-                    0.2: '#E9CACE',  // Lightest
-                    0.4: '#EBA0AA',
-                    0.6: '#EC7785', 
-                    0.8: '#EE4D61',
-                    1.0: '#EF233C'   // Darkest
+                    0.2: '#F0B7B4', // Lightest
+                    0.4: '#F1A09C',
+                    0.6: '#F18A84',
+                    0.8: '#F2736C',
+                    1.0: '#F25C54'  // Darkest
                 },
                 pane: 'dataPane'    // Use the custom data pane to stay on top
             });
@@ -487,7 +487,7 @@ function displayBuildingDamageData(map, data, layerGroup) {
     // Create a GeoJSON layer for damaged buildings
     const buildingsGeoJSON = L.geoJSON(damagedBuildings, {
         style: {
-            color: '#d73027',    // Red border color
+            color: '#F25C54',    // Red border color (Updated)
             weight: 2,           // Border width
             opacity: 1,
             fillColor: 'transparent', // No fill
@@ -684,7 +684,7 @@ function addInteractiveLegend(map, layers, buildingsLayer, heatmapLayer, satelli
         // Loop through our layers and generate a label with a colored square for each
         let legendHtml = '';
         const layerColors = {
-            'Damaged Buildings': '#d73027',
+            'Damaged Buildings': '#F25C54',
             'Craters': '#ffbd00',
             'Satellite Imagery': '#007bff'
         };
@@ -709,7 +709,7 @@ function addInteractiveLegend(map, layers, buildingsLayer, heatmapLayer, satelli
                 // For buildings - filled circle
                 legendHtml += `
                     <div class="legend-item" data-layer="${name}">
-                        <i style="background:${layerColors[name]}"></i>
+                        <i style="background:${layerColors['Damaged Buildings'] === name ? '#F25C54' : layerColors[name]}"></i>
                         <span>${name}</span>
                     </div>`;
             }

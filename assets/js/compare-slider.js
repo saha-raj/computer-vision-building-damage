@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // TEMPORARY: Automatically animate all sliders
     // REMOVE THIS FUNCTION CALL WHEN ANIMATION IS NO LONGER NEEDED
-    autoAnimateSliders();
+    // autoAnimateSliders();
 });
 
 /**
